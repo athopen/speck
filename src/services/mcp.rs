@@ -8,11 +8,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
-use std::path::PathBuf;
+use std::path::Path;
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use tokio::sync::mpsc;
 
 /// JSON-RPC 2.0 version string
 const JSONRPC_VERSION: &str = "2.0";
@@ -221,8 +220,8 @@ pub struct McpClient {
     stdout_reader: Option<BufReader<ChildStdout>>,
     /// Request ID counter
     next_id: AtomicU64,
-    /// Pending requests (id -> sender)
-    pending: Arc<Mutex<HashMap<u64, tokio::sync::oneshot::Sender<JsonRpcResponse>>>>,
+    /// Pending requests (id -> sender) - reserved for async implementation
+    _pending: Arc<Mutex<HashMap<u64, tokio::sync::oneshot::Sender<JsonRpcResponse>>>>,
     /// Available tools
     tools: Vec<ToolDefinition>,
     /// Is initialized
@@ -241,7 +240,7 @@ impl McpClient {
             stdin: None,
             stdout_reader: None,
             next_id: AtomicU64::new(1),
-            pending: Arc::new(Mutex::new(HashMap::new())),
+            _pending: Arc::new(Mutex::new(HashMap::new())),
             tools: Vec::new(),
             initialized: false,
             command,
@@ -393,7 +392,7 @@ impl McpClient {
     pub fn call_workflow(
         &mut self,
         command_type: WorkflowCommandType,
-        spec_directory: &PathBuf,
+        spec_directory: &Path,
         extra_args: Option<Value>,
     ) -> McpResult<ToolResult> {
         let tool_name = command_type.tool_name();

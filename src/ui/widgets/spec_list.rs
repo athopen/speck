@@ -69,16 +69,6 @@ impl<'a> SpecListWidget<'a> {
         }
     }
 
-    /// Get worktree status color
-    fn worktree_status_color(&self, worktree: &Worktree) -> Color {
-        match self.worktree_statuses.get(&worktree.path) {
-            Some(WorktreeStatus::Clean) => Color::Green,
-            Some(WorktreeStatus::Dirty { .. }) => Color::Yellow,
-            Some(WorktreeStatus::Detached) => Color::Magenta,
-            Some(WorktreeStatus::Unknown) | None => Color::DarkGray,
-        }
-    }
-
     /// Build list items from specs
     fn build_items(&self) -> Vec<ListItem<'a>> {
         self.specs

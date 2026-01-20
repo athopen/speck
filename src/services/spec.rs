@@ -4,7 +4,7 @@ use crate::domain::{ArtifactType, SpecArtifacts, SpecId, Specification, Workflow
 use crate::error::{SpecError, SpecResult};
 use regex::Regex;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// Service for specification discovery and management
 pub struct SpecService {
@@ -113,10 +113,9 @@ impl SpecService {
             name.replace('-', " "),
             id.as_str(),
             chrono_lite::Utc::today()
-                .to_string()
                 .split('T')
                 .next()
-                .unwrap_or(""),
+                .unwrap_or_default(),
         );
 
         // For now, just create empty spec.md

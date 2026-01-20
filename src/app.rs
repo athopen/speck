@@ -382,9 +382,7 @@ impl App {
 
     /// Check if a command is currently running
     pub fn is_command_running(&self) -> bool {
-        self.process_handle
-            .as_ref()
-            .map_or(false, |h| h.is_running())
+        self.process_handle.as_ref().is_some_and(|h| h.is_running())
     }
 
     /// Cancel the running command
@@ -496,10 +494,10 @@ impl App {
         };
 
         // Read the artifact (or create empty if it doesn't exist)
-        let content = match self.spec_service.read_artifact(&spec.id, artifact_type) {
-            Ok(content) => content,
-            Err(_) => String::new(),
-        };
+        let content = self
+            .spec_service
+            .read_artifact(&spec.id, artifact_type)
+            .unwrap_or_default();
 
         let file_path = spec.directory.join(artifact_type.filename());
         let title = format!("{} - {}", artifact_type.filename(), spec.id);

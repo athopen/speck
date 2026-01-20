@@ -3,7 +3,7 @@
 use crate::domain::{Worktree, WorktreeStatus, WorktreeSyncStatus};
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph},
+    widgets::{Block, Borders, Clear, Paragraph},
 };
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -53,119 +53,6 @@ impl<'a> WorktreeListWidget<'a> {
     pub fn active_worktree(mut self, path: Option<&'a PathBuf>) -> Self {
         self.active_worktree = path;
         self
-    }
-
-    /// Format a worktree entry for display
-    fn format_worktree(&self, worktree: &Worktree, is_selected: bool) -> ListItem<'a> {
-        let status = self.statuses.get(&worktree.path);
-        let sync_status = self.sync_statuses.get(&worktree.branch);
-
-        // Build status indicators
-        let mut indicators = Vec::new();
-
-        // Main worktree indicator
-        if worktree.is_main {
-            indicators.push(Span::styled("[main]", Style::default().fg(Color::Magenta)));
-            indicators.push(Span::raw(" "));
-        }
-
-        // Active indicator
-        let is_active = self.active_worktree.map_or(false, |p| p == &worktree.path);
-        if is_active {
-            indicators.push(Span::styled("● ", Style::default().fg(Color::Green)));
-        } else {
-            indicators.push(Span::raw("  "));
-        }
-
-        // Branch name
-        let branch_style = if is_selected {
-            Style::default()
-                .fg(Color::White)
-                .add_modifier(Modifier::BOLD)
-        } else {
-            Style::default().fg(Color::Cyan)
-        };
-        indicators.push(Span::styled(worktree.branch.clone(), branch_style));
-
-        // Working directory status
-        if let Some(status) = status {
-            let status_text = match status {
-                WorktreeStatus::Clean => Span::styled(" ✓", Style::default().fg(Color::Green)),
-                WorktreeStatus::Dirty {
-                    modified,
-                    staged,
-                    untracked,
-                } => {
-                    let parts: Vec<String> = [
-                        if *modified > 0 {
-                            Some(format!("~{}", modified))
-                        } else {
-                            None
-                        },
-                        if *staged > 0 {
-                            Some(format!("+{}", staged))
-                        } else {
-                            None
-                        },
-                        if *untracked > 0 {
-                            Some(format!("?{}", untracked))
-                        } else {
-                            None
-                        },
-                    ]
-                    .into_iter()
-                    .flatten()
-                    .collect();
-                    Span::styled(
-                        format!(" [{}]", parts.join(" ")),
-                        Style::default().fg(Color::Yellow),
-                    )
-                }
-                WorktreeStatus::Detached => {
-                    Span::styled(" (detached)", Style::default().fg(Color::Red))
-                }
-                WorktreeStatus::Unknown => Span::styled(" ?", Style::default().fg(Color::DarkGray)),
-            };
-            indicators.push(status_text);
-        }
-
-        // Sync status (ahead/behind remote)
-        if let Some(sync) = sync_status {
-            if sync.remote_exists {
-                let sync_text = match (sync.ahead, sync.behind) {
-                    (0, 0) => Span::styled(" ≡", Style::default().fg(Color::Green)),
-                    (a, 0) => Span::styled(format!(" ↑{}", a), Style::default().fg(Color::Blue)),
-                    (0, b) => Span::styled(format!(" ↓{}", b), Style::default().fg(Color::Red)),
-                    (a, b) => {
-                        Span::styled(format!(" ↑{}↓{}", a, b), Style::default().fg(Color::Yellow))
-                    }
-                };
-                indicators.push(sync_text);
-            }
-        }
-
-        // Path (abbreviated)
-        let path_str = worktree.path.to_string_lossy();
-        let abbreviated_path = if path_str.len() > 40 {
-            format!("...{}", &path_str[path_str.len() - 37..])
-        } else {
-            path_str.to_string()
-        };
-        indicators.push(Span::raw("  "));
-        indicators.push(Span::styled(
-            abbreviated_path,
-            Style::default().fg(Color::DarkGray),
-        ));
-
-        let line = Line::from(indicators);
-
-        let style = if is_selected {
-            Style::default().bg(Color::DarkGray)
-        } else {
-            Style::default()
-        };
-
-        ListItem::new(line).style(style)
     }
 }
 
@@ -421,7 +308,7 @@ impl WorktreeManagementState {
     }
 
     /// Select previous worktree
-    pub fn select_previous(&mut self, count: usize) {
+    pub fn select_previous(&mut self, _count: usize) {
         if self.selected_index > 0 {
             self.selected_index -= 1;
         }

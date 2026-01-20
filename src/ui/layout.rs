@@ -9,7 +9,7 @@ use crate::ui::widgets::text_input::NewSpecDialog;
 use crate::ui::widgets::worktree_list::{ConfirmDialog, WorktreeListWidget};
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph, Wrap},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph, Wrap},
 };
 
 /// Draw the main application UI
@@ -482,11 +482,6 @@ fn draw_error_overlay(frame: &mut Frame, error: &str, area: Rect) {
         .wrap(Wrap { trim: true });
 
     frame.render_widget(error_widget, popup_area);
-}
-
-/// Draw loading indicator with optional message
-fn draw_loading_indicator(frame: &mut Frame, area: Rect) {
-    draw_loading_indicator_with_message(frame, area, None);
 }
 
 /// Draw loading indicator with custom message

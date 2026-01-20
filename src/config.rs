@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 /// Main configuration structure
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProjectConfig {
     #[serde(default)]
     pub worktree: WorktreeConfig,
@@ -17,17 +17,6 @@ pub struct ProjectConfig {
     pub ui: UiConfig,
     #[serde(default)]
     pub git: GitConfig,
-}
-
-impl Default for ProjectConfig {
-    fn default() -> Self {
-        Self {
-            worktree: WorktreeConfig::default(),
-            mcp: McpConfig::default(),
-            ui: UiConfig::default(),
-            git: GitConfig::default(),
-        }
-    }
 }
 
 impl ProjectConfig {

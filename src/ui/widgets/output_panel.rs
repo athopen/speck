@@ -5,6 +5,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState, Wrap},
 };
+use std::fmt;
 use std::time::Instant;
 
 /// Maximum number of lines to keep in the output buffer
@@ -289,14 +290,12 @@ impl OutputBuffer {
     pub fn is_auto_scroll(&self) -> bool {
         self.auto_scroll
     }
+}
 
-    /// Get the output as a single string
-    pub fn to_string(&self) -> String {
-        self.lines
-            .iter()
-            .map(|l| l.content.as_str())
-            .collect::<Vec<_>>()
-            .join("\n")
+impl fmt::Display for OutputBuffer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let content: Vec<_> = self.lines.iter().map(|l| l.content.as_str()).collect();
+        write!(f, "{}", content.join("\n"))
     }
 }
 

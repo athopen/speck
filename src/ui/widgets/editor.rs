@@ -5,7 +5,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Paragraph},
 };
-use tui_textarea::{CursorMove, Input, Key, TextArea};
+use tui_textarea::{Input, Key, TextArea};
 
 /// Editor widget for editing specification documents
 pub struct EditorWidget<'a> {
@@ -289,7 +289,7 @@ impl EditorState {
 
     /// Check if modified
     pub fn is_modified(&self) -> bool {
-        self.editor.as_ref().map_or(false, |e| e.is_modified())
+        self.editor.as_ref().is_some_and(|e| e.is_modified())
     }
 
     /// Get content

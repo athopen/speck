@@ -131,21 +131,21 @@ impl<'a> HelpWidget<'a> {
 
     /// Build help text lines
     fn build_lines() -> Vec<Line<'static>> {
-        let mut lines = Vec::new();
-
         // Header
-        lines.push(Line::from(vec![Span::styled(
-            "  speck Help  ",
-            Style::default()
-                .fg(Color::Cyan)
-                .add_modifier(Modifier::BOLD),
-        )]));
-        lines.push(Line::from(""));
-        lines.push(Line::from(Span::styled(
-            "A TUI for spec-driven development with git worktree management.",
-            Style::default().fg(Color::DarkGray),
-        )));
-        lines.push(Line::from(""));
+        let mut lines = vec![
+            Line::from(vec![Span::styled(
+                "  speck Help  ",
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            )]),
+            Line::from(""),
+            Line::from(Span::styled(
+                "A TUI for spec-driven development with git worktree management.",
+                Style::default().fg(Color::DarkGray),
+            )),
+            Line::from(""),
+        ];
 
         // Build sections
         for (section_name, bindings) in HELP_SECTIONS {
