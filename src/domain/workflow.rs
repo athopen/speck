@@ -57,9 +57,10 @@ impl std::fmt::Display for WorkflowCommandType {
 }
 
 /// Execution state of a workflow command
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub enum ExecutionState {
     /// Command is queued but not started
+    #[default]
     Pending,
     /// Command is currently running
     Running {
@@ -103,12 +104,6 @@ impl ExecutionState {
             Self::Cancelled => "⊘",
             Self::Failed { .. } => "✗",
         }
-    }
-}
-
-impl Default for ExecutionState {
-    fn default() -> Self {
-        Self::Pending
     }
 }
 

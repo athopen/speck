@@ -20,9 +20,10 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 /// Application view state
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum AppView {
     /// Main spec list overview
+    #[default]
     Overview,
     /// Viewing spec details
     SpecDetail(String),
@@ -40,12 +41,6 @@ pub enum AppView {
     NewSpec,
     /// Help view showing keybindings
     Help,
-}
-
-impl Default for AppView {
-    fn default() -> Self {
-        Self::Overview
-    }
 }
 
 /// Document type for viewing/editing
