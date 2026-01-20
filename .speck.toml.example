@@ -1,10 +1,10 @@
-# spec-tui Configuration File
-# Copy this file to your project root as .spec-tui.toml
+# speck Configuration File
+# Copy this file to your project root as .speck.toml
 #
 # Configuration hierarchy (later overrides earlier):
 # 1. Built-in defaults
-# 2. Project config (.spec-tui.toml in project root)
-# 3. User config (~/.config/spec-tui/config.toml)
+# 2. Project config (.speck.toml in project root)
+# 3. User config (~/.config/speck/config.toml)
 # 4. Environment variables (SPEC_TUI_*)
 
 # Worktree configuration

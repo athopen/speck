@@ -28,12 +28,12 @@ jobs:
       - name: Package
         run: |
           mkdir -p dist
-          cp target/release/spec-tui dist/
+          cp target/release/speck dist/
           cp README.md LICENSE dist/ 2>/dev/null || true
-          cd dist && tar -czvf ../spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz *
+          cd dist && tar -czvf ../speck-${{ github.ref_name }}-linux-x86_64.tar.gz *
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz
+          files: speck-${{ github.ref_name }}-linux-x86_64.tar.gz
           generate_release_notes: true

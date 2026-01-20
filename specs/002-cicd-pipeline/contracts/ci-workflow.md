@@ -1,7 +1,7 @@
 # Contract: CI Workflow
 
 **File**: `.github/workflows/ci.yml`
-**Purpose**: Continuous integration - lint, test, build on every push and PR
+**Purpose**: Continuous integration - lint and test on every push and PR
 
 ## Triggers
 
@@ -48,27 +48,6 @@
 - 0: All tests pass
 - Non-zero: One or more tests failed
 
-### Job: build
-
-**Purpose**: Verify release build and create artifact
-
-| Step | Action/Command | Purpose |
-|------|----------------|---------|
-| Checkout | `actions/checkout@v4` | Get source code |
-| Setup Rust | `dtolnay/rust-toolchain@stable` | Install stable Rust |
-| Cache | `Swatinem/rust-cache@v2` | Restore cached dependencies |
-| Build | `cargo build --release` | Compile release binary |
-| Upload | `actions/upload-artifact@v4` | Store binary for download |
-
-**Artifact**:
-- Name: `spec-tui-linux-x86_64`
-- Path: `target/release/spec-tui`
-- Retention: 7 days
-
-**Exit Codes**:
-- 0: Build succeeds
-- Non-zero: Compilation error
-
 ## Status Reporting
 
 All jobs report status to GitHub:
@@ -82,8 +61,7 @@ All jobs report status to GitHub:
 |-----|-----------------|-------|
 | lint | < 2 min | Minimal compilation needed |
 | test | < 4 min | Full test suite |
-| build | < 4 min | Release optimization |
-| Total | < 5 min | Jobs run in parallel |
+| Total | < 4 min | Jobs run in parallel |
 
 ## Error Handling
 

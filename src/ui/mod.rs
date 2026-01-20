@@ -1,4 +1,4 @@
-//! UI components for spec-tui.
+//! UI components for speck.
 //!
 //! This module contains:
 //! - layout: Main layout rendering

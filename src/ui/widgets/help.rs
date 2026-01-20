@@ -135,7 +135,7 @@ impl<'a> HelpWidget<'a> {
 
         // Header
         lines.push(Line::from(vec![Span::styled(
-            "  spec-tui Help  ",
+            "  speck Help  ",
             Style::default()
                 .fg(Color::Cyan)
                 .add_modifier(Modifier::BOLD),

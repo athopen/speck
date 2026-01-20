@@ -1,4 +1,4 @@
-//! Infrastructure services for spec-tui.
+//! Infrastructure services for speck.
 //!
 //! This module contains:
 //! - GitService: Git and worktree operations

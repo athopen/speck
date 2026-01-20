@@ -55,22 +55,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Run tests
         run: cargo test --all-features
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Build release
-        run: cargo build --release
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: spec-tui-linux-x86_64
-          path: target/release/spec-tui
-          retention-days: 7
 ```
 
 ### 3. Create Release Workflow
@@ -103,14 +87,14 @@ jobs:
       - name: Package
         run: |
           mkdir -p dist
-          cp target/release/spec-tui dist/
+          cp target/release/speck dist/
           cp README.md LICENSE dist/ 2>/dev/null || true
-          cd dist && tar -czvf ../spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz *
+          cd dist && tar -czvf ../speck-${{ github.ref_name }}-linux-x86_64.tar.gz *
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz
+          files: speck-${{ github.ref_name }}-linux-x86_64.tar.gz
           generate_release_notes: true
 ```
 
@@ -127,7 +111,7 @@ git push
 1. Go to repository Settings → Branches
 2. Add branch protection rule for `master` (or `main`)
 3. Enable "Require status checks to pass before merging"
-4. Select required checks: `Lint`, `Test`, `Build`
+4. Select required checks: `Lint`, `Test`
 5. Enable "Require branches to be up to date before merging"
 
 ## Usage
@@ -138,7 +122,6 @@ Every push and pull request automatically triggers:
 - Code formatting check (`cargo fmt --check`)
 - Linting (`cargo clippy`)
 - Tests (`cargo test`)
-- Release build (`cargo build --release`)
 
 View results in the Actions tab or on PR/commit pages.
 
@@ -156,8 +139,6 @@ This triggers the release workflow which:
 3. Publishes a GitHub Release with the archive attached
 
 ### Downloading Artifacts
-
-**From CI runs**: Actions → Select run → Artifacts section → Download
 
 **From Releases**: Releases page → Select version → Assets → Download
 
@@ -205,5 +186,5 @@ git push
 ## Performance Tips
 
 1. **Cache is key**: Subsequent runs are ~50% faster due to dependency caching
-2. **Parallel jobs**: lint, test, build run simultaneously
+2. **Parallel jobs**: lint and test run simultaneously
 3. **Cancel redundant runs**: Rapid pushes cancel outdated runs automatically

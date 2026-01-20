@@ -1,4 +1,4 @@
-//! Unified error types for the spec-tui application.
+//! Unified error types for the speck application.
 
 use std::path::PathBuf;
 use thiserror::Error;

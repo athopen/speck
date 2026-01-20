@@ -115,7 +115,7 @@ concurrency:
 
 ## Decision 8: Artifact Naming Convention
 
-**Decision**: `spec-tui-{version}-linux-x86_64.tar.gz`
+**Decision**: `speck-{version}-linux-x86_64.tar.gz`
 
 **Rationale**:
 - Includes tool name for identification

@@ -39,12 +39,12 @@ permissions:
 
 ## Artifact Details
 
-**Archive Name**: `spec-tui-{version}-linux-x86_64.tar.gz`
+**Archive Name**: `speck-{version}-linux-x86_64.tar.gz`
 
 **Archive Contents**:
 ```
-spec-tui-v1.0.0-linux-x86_64/
-├── spec-tui          # Binary executable
+speck-v1.0.0-linux-x86_64/
+├── speck          # Binary executable
 ├── README.md         # Usage instructions (from repo)
 └── LICENSE           # License file (from repo)
 ```

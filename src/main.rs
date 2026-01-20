@@ -1,4 +1,4 @@
-//! spec-tui: Terminal UI for spec-driven development workflow
+//! speck: Terminal UI for spec-driven development workflow
 //!
 //! A keyboard-driven TUI for managing feature specifications with
 //! git worktree integration for parallel development.
@@ -14,7 +14,7 @@ use std::panic;
 use std::path::PathBuf;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
-use spec_tui::App;
+use speck::App;
 
 /// Setup the terminal for TUI mode
 fn setup_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>> {
@@ -64,10 +64,10 @@ async fn main() -> Result<()> {
     install_panic_hook();
 
     // Find project root
-    let project_root = spec_tui::domain::Project::discover(None)
+    let project_root = speck::domain::Project::discover(None)
         .unwrap_or_else(|| std::env::current_dir().unwrap_or_else(|_| PathBuf::from(".")));
 
-    tracing::info!("Starting spec-tui in {:?}", project_root);
+    tracing::info!("Starting speck in {:?}", project_root);
 
     // Setup terminal
     let mut terminal = setup_terminal()?;

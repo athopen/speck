@@ -1,4 +1,4 @@
-//! Reusable UI widgets for spec-tui.
+//! Reusable UI widgets for speck.
 
 pub mod editor;
 pub mod help;

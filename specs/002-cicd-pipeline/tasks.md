@@ -96,7 +96,7 @@ Based on plan.md structure (GitHub Actions workflows):
 - [x] T020 [US3] Add Rust toolchain setup using dtolnay/rust-toolchain@stable in build job
 - [x] T021 [US3] Add dependency caching using Swatinem/rust-cache@v2 in build job per FR-014
 - [x] T022 [US3] Add `cargo build --release` step for release build per FR-006
-- [x] T023 [US3] Add artifact upload using actions/upload-artifact@v4 for `target/release/spec-tui` with 7-day retention per FR-007
+- [x] T023 [US3] Add artifact upload using actions/upload-artifact@v4 for `target/release/speck` with 7-day retention per FR-007
 
 **Checkpoint**: User Story 3 complete - builds run and artifacts are downloadable
 
@@ -131,7 +131,7 @@ Based on plan.md structure (GitHub Actions workflows):
 - [x] T029 [US5] Add Rust toolchain setup using dtolnay/rust-toolchain@stable in release job
 - [x] T030 [US5] Add dependency caching using Swatinem/rust-cache@v2 in release job per FR-014
 - [x] T031 [US5] Add `cargo build --release` step in release job
-- [x] T032 [US5] Add packaging step to create `spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz` archive per FR-011
+- [x] T032 [US5] Add packaging step to create `speck-${{ github.ref_name }}-linux-x86_64.tar.gz` archive per FR-011
 - [x] T033 [US5] Add release creation using softprops/action-gh-release@v1 with generate_release_notes: true per FR-011
 
 **Checkpoint**: User Story 5 complete - releases created automatically on version tags

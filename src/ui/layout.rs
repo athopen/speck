@@ -82,7 +82,7 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
         .split(area);
 
     // Header
-    let header = Paragraph::new("spec-tui - Spec-Driven Development")
+    let header = Paragraph::new("speck - Spec-Driven Development")
         .style(
             Style::default()
                 .fg(Color::Cyan)

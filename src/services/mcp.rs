@@ -21,7 +21,7 @@ const JSONRPC_VERSION: &str = "2.0";
 const MCP_PROTOCOL_VERSION: &str = "2025-11-25";
 
 /// Client name and version
-const CLIENT_NAME: &str = "spec-tui";
+const CLIENT_NAME: &str = "speck";
 const CLIENT_VERSION: &str = "0.1.0";
 
 /// JSON-RPC Request

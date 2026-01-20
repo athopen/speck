@@ -1,4 +1,4 @@
-//! Domain entities for spec-tui.
+//! Domain entities for speck.
 //!
 //! This module contains the core business entities:
 //! - Specification: A feature being developed

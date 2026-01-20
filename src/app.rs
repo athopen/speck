@@ -149,7 +149,7 @@ impl App {
             GitService::new(project_root.clone(), project.worktree_directory.clone()).ok();
 
         // Create workflow runner with log directory
-        let log_dir = project_root.join(".spec-tui").join("logs");
+        let log_dir = project_root.join(".speck").join("logs");
         let workflow_runner = Some(WorkflowRunner::default_with_log_dir(log_dir));
 
         Ok(Self {

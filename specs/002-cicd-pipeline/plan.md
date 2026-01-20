@@ -5,7 +5,7 @@
 
 ## Summary
 
-Implement a comprehensive CI/CD pipeline using GitHub Actions to automate code quality checks, testing, building, and release artifact creation for the spec-tui Rust project. The pipeline will trigger on pushes and pull requests, enforce quality gates, cache dependencies for performance, and automatically create releases when version tags are pushed.
+Implement a comprehensive CI/CD pipeline using GitHub Actions to automate code quality checks, testing, building, and release artifact creation for the speck Rust project. The pipeline will trigger on pushes and pull requests, enforce quality gates, cache dependencies for performance, and automatically create releases when version tags are pushed.
 
 ## Technical Context
 
