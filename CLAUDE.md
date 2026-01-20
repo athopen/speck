@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2026-01-20
 
 ## Active Technologies
+- YAML (GitHub Actions) + Rust 1.75+ (project under CI) + GitHub Actions, actions/checkout, actions/cache, dtolnay/rust-toolchain (002-cicd-pipeline)
+- N/A (CI/CD configuration only) (002-cicd-pipeline)
 
 - Rust 1.75+ (2021 edition) + Ratatui (TUI rendering), Tokio (async runtime), Crossterm (terminal I/O), gitoxide/gix (git operations), jsonrpc-core (MCP client), config-rs (configuration), tui-textarea (editing), syntect (syntax highlighting) (001-spec-tui-worktree)
 
@@ -50,6 +52,7 @@ cargo run           # Run the TUI (requires terminal)
 Rust 1.75+ (2021 edition): Follow standard conventions
 
 ## Recent Changes
+- 002-cicd-pipeline: Added YAML (GitHub Actions) + Rust 1.75+ (project under CI) + GitHub Actions, actions/checkout, actions/cache, dtolnay/rust-toolchain
 
 - 001-spec-tui-worktree: Added Rust 1.75+ (2021 edition) + Ratatui (TUI rendering), Tokio (async runtime), Crossterm (terminal I/O), gitoxide/gix (git operations), jsonrpc-core (MCP client), config-rs (configuration), tui-textarea (editing), syntect (syntax highlighting)
 

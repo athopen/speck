@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release
+        run: cargo build --release
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp target/release/spec-tui dist/
+          cp README.md LICENSE dist/ 2>/dev/null || true
+          cd dist && tar -czvf ../spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz *
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: spec-tui-${{ github.ref_name }}-linux-x86_64.tar.gz
+          generate_release_notes: true
