@@ -1,0 +1,17 @@
+# Default configuration for spec-tui
+# This file is embedded in the binary
+
+[worktree]
+directory = ".worktrees"
+
+[mcp]
+type = "stdio"
+timeout_seconds = 60
+
+[ui]
+refresh_rate_ms = 100
+vim_navigation = true
+
+[git]
+specs_directory = "specs"
+main_branch = "main"

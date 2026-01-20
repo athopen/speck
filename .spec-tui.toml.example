@@ -1,0 +1,51 @@
+# spec-tui Configuration File
+# Copy this file to your project root as .spec-tui.toml
+#
+# Configuration hierarchy (later overrides earlier):
+# 1. Built-in defaults
+# 2. Project config (.spec-tui.toml in project root)
+# 3. User config (~/.config/spec-tui/config.toml)
+# 4. Environment variables (SPEC_TUI_*)
+
+# Worktree configuration
+[worktree]
+# Directory where git worktrees are created (relative to project root)
+# Each spec branch gets its own worktree in this directory
+directory = ".worktrees"
+
+# MCP (Model Context Protocol) client configuration
+[mcp]
+# Transport type: "stdio" (default) or "http"
+type = "stdio"
+# Request timeout in seconds
+timeout_seconds = 60
+
+# For HTTP transport, uncomment and configure:
+# type = "http"
+# endpoint = "http://localhost:8080/mcp"
+
+# UI configuration
+[ui]
+# UI refresh rate in milliseconds
+# Lower values mean more responsive UI but higher CPU usage
+refresh_rate_ms = 100
+
+# Enable vim-style navigation (j/k/h/l keys)
+vim_navigation = true
+
+# Git-related configuration
+[git]
+# Directory containing spec folders (relative to project root)
+# Each spec is a folder like: specs/001-feature-name/
+specs_directory = "specs"
+
+# Main branch name (used as base for new branches)
+main_branch = "main"
+
+# Environment variable overrides:
+# SPEC_TUI__WORKTREE__DIRECTORY - Override worktree directory
+# SPEC_TUI__UI__VIM_NAVIGATION - Override vim navigation (true/false)
+# SPEC_TUI__UI__REFRESH_RATE_MS - Override refresh rate
+# SPEC_TUI__GIT__SPECS_DIRECTORY - Override specs directory
+# SPEC_TUI__GIT__MAIN_BRANCH - Override main branch
+# SPEC_TUI__MCP__TIMEOUT_SECONDS - Override MCP timeout
