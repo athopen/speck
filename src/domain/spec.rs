@@ -3,7 +3,7 @@
 use crate::error::SpecError;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// Unique identifier for a specification.
 /// Format: "{NNN}-{name}" (e.g., "001-feature-auth")
@@ -126,7 +126,7 @@ pub struct SpecArtifacts {
 
 impl SpecArtifacts {
     /// Scan a directory for artifacts
-    pub fn scan(directory: &PathBuf) -> Self {
+    pub fn scan(directory: &Path) -> Self {
         let spec_path = directory.join("spec.md");
         let plan_path = directory.join("plan.md");
         let tasks_path = directory.join("tasks.md");

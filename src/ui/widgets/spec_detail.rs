@@ -2,11 +2,8 @@
 
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState, Wrap},
+    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
 };
-use syntect::easy::HighlightLines;
-use syntect::highlighting::{Style as SyntectStyle, ThemeSet};
-use syntect::parsing::SyntaxSet;
 
 /// Widget for viewing specification documents with markdown highlighting
 pub struct SpecDetailWidget<'a> {
@@ -16,8 +13,8 @@ pub struct SpecDetailWidget<'a> {
     title: String,
     /// Scroll offset
     scroll_offset: usize,
-    /// Total lines in document
-    total_lines: usize,
+    /// Total lines in document (reserved for future use)
+    _total_lines: usize,
     /// Visible height (for scrollbar)
     visible_height: usize,
 }
@@ -30,7 +27,7 @@ impl<'a> SpecDetailWidget<'a> {
             content,
             title: title.to_string(),
             scroll_offset: 0,
-            total_lines,
+            _total_lines: total_lines,
             visible_height: 20,
         }
     }
@@ -88,7 +85,10 @@ impl<'a> SpecDetailWidget<'a> {
                     .add_modifier(Modifier::BOLD),
             ));
         }
-        if trimmed.starts_with("#### ") || trimmed.starts_with("##### ") || trimmed.starts_with("###### ") {
+        if trimmed.starts_with("#### ")
+            || trimmed.starts_with("##### ")
+            || trimmed.starts_with("###### ")
+        {
             return Line::from(Span::styled(
                 line.to_string(),
                 Style::default()
@@ -143,7 +143,10 @@ impl<'a> SpecDetailWidget<'a> {
         }
 
         // Checkbox items
-        if trimmed.starts_with("- [ ] ") || trimmed.starts_with("- [x] ") || trimmed.starts_with("- [X] ") {
+        if trimmed.starts_with("- [ ] ")
+            || trimmed.starts_with("- [x] ")
+            || trimmed.starts_with("- [X] ")
+        {
             let indent_spaces = line.len() - trimmed.len();
             let indent = " ".repeat(indent_spaces);
             let checkbox: String = trimmed.chars().take(6).collect();
@@ -164,7 +167,9 @@ impl<'a> SpecDetailWidget<'a> {
         if trimmed.starts_with("> ") {
             return Line::from(Span::styled(
                 line.to_string(),
-                Style::default().fg(Color::DarkGray).add_modifier(Modifier::ITALIC),
+                Style::default()
+                    .fg(Color::DarkGray)
+                    .add_modifier(Modifier::ITALIC),
             ));
         }
 
@@ -277,7 +282,9 @@ impl Widget for SpecDetailWidget<'_> {
 
         // Calculate visible range
         let visible_height = inner.height as usize;
-        let scroll = self.scroll_offset.min(total_lines.saturating_sub(visible_height));
+        let scroll = self
+            .scroll_offset
+            .min(total_lines.saturating_sub(visible_height));
 
         // Create paragraph with scroll
         let visible_lines: Vec<Line> = lines
@@ -405,6 +412,6 @@ mod tests {
     fn test_widget_creation() {
         let content = "# Test\n\nSome content";
         let widget = SpecDetailWidget::new(content, "test.md");
-        assert_eq!(widget.total_lines, 3);
+        assert_eq!(widget._total_lines, 3);
     }
 }

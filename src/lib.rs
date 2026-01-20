@@ -1,4 +1,4 @@
-//! spec-tui: Terminal UI for spec-driven development workflow
+//! speck: Terminal UI for spec-driven development workflow
 //!
 //! This crate provides a terminal-based user interface for managing feature
 //! specifications with git worktree integration for parallel development.

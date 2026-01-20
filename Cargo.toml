@@ -1,9 +1,9 @@
 [package]
-name = "spec-tui"
+name = "speck"
 version = "0.1.0"
 edition = "2021"
 description = "Terminal UI for spec-driven development workflow with git worktree integration"
-authors = ["spec-tui contributors"]
+authors = ["speck contributors"]
 license = "MIT"
 
 [dependencies]
@@ -50,5 +50,5 @@ tempfile = "3.10"
 tokio-test = "0.4"
 
 [[bin]]
-name = "spec-tui"
+name = "speck"
 path = "src/main.rs"

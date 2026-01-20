@@ -1,4 +1,4 @@
-//! Configuration management for spec-tui.
+//! Configuration management for speck.
 //!
 //! Supports layered configuration: defaults → project → user → env
 
@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 /// Main configuration structure
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProjectConfig {
     #[serde(default)]
     pub worktree: WorktreeConfig,
@@ -19,17 +19,6 @@ pub struct ProjectConfig {
     pub git: GitConfig,
 }
 
-impl Default for ProjectConfig {
-    fn default() -> Self {
-        Self {
-            worktree: WorktreeConfig::default(),
-            mcp: McpConfig::default(),
-            ui: UiConfig::default(),
-            git: GitConfig::default(),
-        }
-    }
-}
-
 impl ProjectConfig {
     /// Load configuration with hierarchy: defaults → project → user → env
     pub fn load(project_root: Option<&PathBuf>) -> Result<Self, ConfigError> {
@@ -38,21 +27,24 @@ impl ProjectConfig {
         let mut builder = Config::builder();
 
         // 1. Start with defaults
-        builder = builder.add_source(config::File::from_str(
-            include_str!("../default_config.toml"),
-            config::FileFormat::Toml,
-        ).required(false));
+        builder = builder.add_source(
+            config::File::from_str(
+                include_str!("../default_config.toml"),
+                config::FileFormat::Toml,
+            )
+            .required(false),
+        );
 
-        // 2. Project-specific config (.spec-tui.toml in project root)
+        // 2. Project-specific config (.speck.toml in project root)
         if let Some(root) = project_root {
-            let project_config = root.join(".spec-tui.toml");
+            let project_config = root.join(".speck.toml");
             if project_config.exists() {
                 builder = builder.add_source(File::from(project_config).required(false));
             }
         }
 
-        // 3. User config (~/.config/spec-tui/config.toml)
-        if let Some(config_dir) = directories::ProjectDirs::from("com", "spec-tui", "spec-tui") {
+        // 3. User config (~/.config/speck/config.toml)
+        if let Some(config_dir) = directories::ProjectDirs::from("com", "speck", "speck") {
             let user_config = config_dir.config_dir().join("config.toml");
             if user_config.exists() {
                 builder = builder.add_source(File::from(user_config).required(false));
@@ -133,9 +125,7 @@ pub enum McpTransport {
     #[default]
     Stdio,
     /// HTTP transport with SSE for responses
-    Http {
-        endpoint: String,
-    },
+    Http { endpoint: String },
 }
 
 /// UI configuration

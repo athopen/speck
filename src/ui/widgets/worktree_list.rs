@@ -3,7 +3,7 @@
 use crate::domain::{Worktree, WorktreeStatus, WorktreeSyncStatus};
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph},
+    widgets::{Block, Borders, Clear, Paragraph},
 };
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -30,7 +30,8 @@ impl<'a> WorktreeListWidget<'a> {
         selected_index: usize,
     ) -> Self {
         // Use a static empty hashmap for default
-        static EMPTY_SYNC: std::sync::OnceLock<HashMap<String, WorktreeSyncStatus>> = std::sync::OnceLock::new();
+        static EMPTY_SYNC: std::sync::OnceLock<HashMap<String, WorktreeSyncStatus>> =
+            std::sync::OnceLock::new();
         let empty = EMPTY_SYNC.get_or_init(HashMap::new);
 
         Self {
@@ -52,91 +53,6 @@ impl<'a> WorktreeListWidget<'a> {
     pub fn active_worktree(mut self, path: Option<&'a PathBuf>) -> Self {
         self.active_worktree = path;
         self
-    }
-
-    /// Format a worktree entry for display
-    fn format_worktree(&self, worktree: &Worktree, is_selected: bool) -> ListItem<'a> {
-        let status = self.statuses.get(&worktree.path);
-        let sync_status = self.sync_statuses.get(&worktree.branch);
-
-        // Build status indicators
-        let mut indicators = Vec::new();
-
-        // Main worktree indicator
-        if worktree.is_main {
-            indicators.push(Span::styled("[main]", Style::default().fg(Color::Magenta)));
-            indicators.push(Span::raw(" "));
-        }
-
-        // Active indicator
-        let is_active = self.active_worktree.map_or(false, |p| p == &worktree.path);
-        if is_active {
-            indicators.push(Span::styled("● ", Style::default().fg(Color::Green)));
-        } else {
-            indicators.push(Span::raw("  "));
-        }
-
-        // Branch name
-        let branch_style = if is_selected {
-            Style::default().fg(Color::White).add_modifier(Modifier::BOLD)
-        } else {
-            Style::default().fg(Color::Cyan)
-        };
-        indicators.push(Span::styled(worktree.branch.clone(), branch_style));
-
-        // Working directory status
-        if let Some(status) = status {
-            let status_text = match status {
-                WorktreeStatus::Clean => Span::styled(" ✓", Style::default().fg(Color::Green)),
-                WorktreeStatus::Dirty { modified, staged, untracked } => {
-                    let parts: Vec<String> = [
-                        if *modified > 0 { Some(format!("~{}", modified)) } else { None },
-                        if *staged > 0 { Some(format!("+{}", staged)) } else { None },
-                        if *untracked > 0 { Some(format!("?{}", untracked)) } else { None },
-                    ]
-                    .into_iter()
-                    .flatten()
-                    .collect();
-                    Span::styled(format!(" [{}]", parts.join(" ")), Style::default().fg(Color::Yellow))
-                }
-                WorktreeStatus::Detached => Span::styled(" (detached)", Style::default().fg(Color::Red)),
-                WorktreeStatus::Unknown => Span::styled(" ?", Style::default().fg(Color::DarkGray)),
-            };
-            indicators.push(status_text);
-        }
-
-        // Sync status (ahead/behind remote)
-        if let Some(sync) = sync_status {
-            if sync.remote_exists {
-                let sync_text = match (sync.ahead, sync.behind) {
-                    (0, 0) => Span::styled(" ≡", Style::default().fg(Color::Green)),
-                    (a, 0) => Span::styled(format!(" ↑{}", a), Style::default().fg(Color::Blue)),
-                    (0, b) => Span::styled(format!(" ↓{}", b), Style::default().fg(Color::Red)),
-                    (a, b) => Span::styled(format!(" ↑{}↓{}", a, b), Style::default().fg(Color::Yellow)),
-                };
-                indicators.push(sync_text);
-            }
-        }
-
-        // Path (abbreviated)
-        let path_str = worktree.path.to_string_lossy();
-        let abbreviated_path = if path_str.len() > 40 {
-            format!("...{}", &path_str[path_str.len() - 37..])
-        } else {
-            path_str.to_string()
-        };
-        indicators.push(Span::raw("  "));
-        indicators.push(Span::styled(abbreviated_path, Style::default().fg(Color::DarkGray)));
-
-        let line = Line::from(indicators);
-
-        let style = if is_selected {
-            Style::default().bg(Color::DarkGray)
-        } else {
-            Style::default()
-        };
-
-        ListItem::new(line).style(style)
     }
 }
 
@@ -166,7 +82,9 @@ impl Widget for WorktreeListWidget<'_> {
             // Selection indicator
             let prefix = if is_selected { "> " } else { "  " };
             let prefix_style = if is_selected {
-                Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD)
             } else {
                 Style::default()
             };
@@ -185,7 +103,9 @@ impl Widget for WorktreeListWidget<'_> {
 
             // Branch name
             let branch_style = if is_selected {
-                Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD)
             } else {
                 Style::default().fg(Color::Cyan)
             };
@@ -201,19 +121,42 @@ impl Widget for WorktreeListWidget<'_> {
             if let Some(status) = status {
                 let (status_text, style) = match status {
                     WorktreeStatus::Clean => ("✓".to_string(), Style::default().fg(Color::Green)),
-                    WorktreeStatus::Dirty { modified, staged, untracked } => {
+                    WorktreeStatus::Dirty {
+                        modified,
+                        staged,
+                        untracked,
+                    } => {
                         let parts: Vec<String> = [
-                            if *modified > 0 { Some(format!("~{}", modified)) } else { None },
-                            if *staged > 0 { Some(format!("+{}", staged)) } else { None },
-                            if *untracked > 0 { Some(format!("?{}", untracked)) } else { None },
+                            if *modified > 0 {
+                                Some(format!("~{}", modified))
+                            } else {
+                                None
+                            },
+                            if *staged > 0 {
+                                Some(format!("+{}", staged))
+                            } else {
+                                None
+                            },
+                            if *untracked > 0 {
+                                Some(format!("?{}", untracked))
+                            } else {
+                                None
+                            },
                         ]
                         .into_iter()
                         .flatten()
                         .collect();
-                        (format!("[{}]", parts.join(" ")), Style::default().fg(Color::Yellow))
-                    },
-                    WorktreeStatus::Detached => ("(detached)".to_string(), Style::default().fg(Color::Red)),
-                    WorktreeStatus::Unknown => ("?".to_string(), Style::default().fg(Color::DarkGray)),
+                        (
+                            format!("[{}]", parts.join(" ")),
+                            Style::default().fg(Color::Yellow),
+                        )
+                    }
+                    WorktreeStatus::Detached => {
+                        ("(detached)".to_string(), Style::default().fg(Color::Red))
+                    }
+                    WorktreeStatus::Unknown => {
+                        ("?".to_string(), Style::default().fg(Color::DarkGray))
+                    }
                 };
                 buf.set_string(x, y, &status_text, style);
                 x += status_text.len() as u16 + 1;
@@ -242,7 +185,12 @@ impl Widget for WorktreeListWidget<'_> {
                 } else {
                     path_str.to_string()
                 };
-                buf.set_string(x + 1, y, &abbreviated_path, Style::default().fg(Color::DarkGray));
+                buf.set_string(
+                    x + 1,
+                    y,
+                    &abbreviated_path,
+                    Style::default().fg(Color::DarkGray),
+                );
             }
         }
     }
@@ -308,20 +256,34 @@ impl Widget for ConfirmDialog<'_> {
 
         // "Yes" button
         let yes_style = if self.yes_selected {
-            Style::default().fg(Color::Black).bg(Color::Red).add_modifier(Modifier::BOLD)
+            Style::default()
+                .fg(Color::Black)
+                .bg(Color::Red)
+                .add_modifier(Modifier::BOLD)
         } else {
             Style::default().fg(Color::White)
         };
-        let yes_text = if self.yes_selected { "[ Yes ]" } else { "  Yes  " };
+        let yes_text = if self.yes_selected {
+            "[ Yes ]"
+        } else {
+            "  Yes  "
+        };
         buf.set_string(start_x, buttons_y, yes_text, yes_style);
 
         // "No" button
         let no_style = if !self.yes_selected {
-            Style::default().fg(Color::Black).bg(Color::Green).add_modifier(Modifier::BOLD)
+            Style::default()
+                .fg(Color::Black)
+                .bg(Color::Green)
+                .add_modifier(Modifier::BOLD)
         } else {
             Style::default().fg(Color::White)
         };
-        let no_text = if !self.yes_selected { "[  No  ]" } else { "   No   " };
+        let no_text = if !self.yes_selected {
+            "[  No  ]"
+        } else {
+            "   No   "
+        };
         buf.set_string(start_x + button_width + 2, buttons_y, no_text, no_style);
     }
 }
@@ -346,7 +308,7 @@ impl WorktreeManagementState {
     }
 
     /// Select previous worktree
-    pub fn select_previous(&mut self, count: usize) {
+    pub fn select_previous(&mut self, _count: usize) {
         if self.selected_index > 0 {
             self.selected_index -= 1;
         }

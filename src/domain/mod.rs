@@ -1,4 +1,4 @@
-//! Domain entities for spec-tui.
+//! Domain entities for speck.
 //!
 //! This module contains the core business entities:
 //! - Specification: A feature being developed
@@ -13,5 +13,7 @@ mod worktree;
 
 pub use project::Project;
 pub use spec::{ArtifactType, SpecArtifacts, SpecId, Specification, WorkflowPhase};
-pub use workflow::{ExecutionState, OutputLine, OutputStream, WorkflowCommand, WorkflowCommandType};
+pub use workflow::{
+    ExecutionState, OutputLine, OutputStream, WorkflowCommand, WorkflowCommandType,
+};
 pub use worktree::{Worktree, WorktreeStatus, WorktreeSyncStatus};

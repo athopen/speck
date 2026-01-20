@@ -46,7 +46,7 @@ impl Worktree {
 }
 
 /// Working tree status
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum WorktreeStatus {
     /// No uncommitted changes
     Clean,
@@ -59,6 +59,7 @@ pub enum WorktreeStatus {
     /// HEAD is detached
     Detached,
     /// Status cannot be determined
+    #[default]
     Unknown,
 }
 
@@ -107,12 +108,6 @@ impl WorktreeStatus {
             Self::Detached => "Detached HEAD".to_string(),
             Self::Unknown => "Unknown".to_string(),
         }
-    }
-}
-
-impl Default for WorktreeStatus {
-    fn default() -> Self {
-        Self::Unknown
     }
 }
 

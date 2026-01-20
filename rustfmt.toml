@@ -1,4 +1,4 @@
-# Rust formatting configuration for spec-tui
+# Rust formatting configuration for speck
 edition = "2021"
 max_width = 100
 tab_spaces = 4

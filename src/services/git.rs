@@ -6,12 +6,11 @@
 use crate::domain::{Worktree, WorktreeStatus, WorktreeSyncStatus};
 use crate::error::{GitError, GitResult};
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
 
 /// Git service for worktree management
 pub struct GitService {
     repo_path: PathBuf,
-    worktree_base: PathBuf,
+    _worktree_base: PathBuf,
 }
 
 impl GitService {
@@ -25,7 +24,7 @@ impl GitService {
 
         Ok(Self {
             repo_path,
-            worktree_base,
+            _worktree_base: worktree_base,
         })
     }
 
@@ -266,7 +265,11 @@ impl GitService {
 
         // Check remote branch
         let output = std::process::Command::new("git")
-            .args(["rev-parse", "--verify", &format!("refs/remotes/origin/{}", branch)])
+            .args([
+                "rev-parse",
+                "--verify",
+                &format!("refs/remotes/origin/{}", branch),
+            ])
             .current_dir(&self.repo_path)
             .output()
             .map_err(|e| GitError::Operation(format!("Failed to check remote branch: {}", e)))?;
@@ -321,54 +324,6 @@ impl GitService {
         }
 
         Ok(())
-    }
-}
-
-/// Async wrapper for GitService operations
-pub struct AsyncGitService {
-    inner: Arc<GitService>,
-}
-
-impl AsyncGitService {
-    pub fn new(git_service: GitService) -> Self {
-        Self {
-            inner: Arc::new(git_service),
-        }
-    }
-
-    pub async fn list_worktrees(&self) -> GitResult<Vec<Worktree>> {
-        let inner = self.inner.clone();
-        tokio::task::spawn_blocking(move || inner.list_worktrees())
-            .await
-            .map_err(|e| GitError::Operation(format!("Task join error: {}", e)))?
-    }
-
-    pub async fn create_worktree(&self, branch: String, path: PathBuf) -> GitResult<Worktree> {
-        let inner = self.inner.clone();
-        tokio::task::spawn_blocking(move || inner.create_worktree(&branch, &path))
-            .await
-            .map_err(|e| GitError::Operation(format!("Task join error: {}", e)))?
-    }
-
-    pub async fn delete_worktree(&self, path: PathBuf, force: bool) -> GitResult<()> {
-        let inner = self.inner.clone();
-        tokio::task::spawn_blocking(move || inner.delete_worktree(&path, force))
-            .await
-            .map_err(|e| GitError::Operation(format!("Task join error: {}", e)))?
-    }
-
-    pub async fn worktree_status(&self, path: PathBuf) -> GitResult<WorktreeStatus> {
-        let inner = self.inner.clone();
-        tokio::task::spawn_blocking(move || inner.worktree_status(&path))
-            .await
-            .map_err(|e| GitError::Operation(format!("Task join error: {}", e)))?
-    }
-
-    pub async fn branch_exists(&self, branch: String) -> GitResult<bool> {
-        let inner = self.inner.clone();
-        tokio::task::spawn_blocking(move || inner.branch_exists(&branch))
-            .await
-            .map_err(|e| GitError::Operation(format!("Task join error: {}", e)))?
     }
 }
 

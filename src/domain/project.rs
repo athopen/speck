@@ -35,9 +35,8 @@ impl Project {
 
     /// Discover the project root by walking up from current directory
     pub fn discover(start_path: Option<PathBuf>) -> Option<PathBuf> {
-        let start = start_path.unwrap_or_else(|| {
-            std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
-        });
+        let start = start_path
+            .unwrap_or_else(|| std::env::current_dir().unwrap_or_else(|_| PathBuf::from(".")));
 
         let mut current = start.as_path();
         loop {

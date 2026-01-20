@@ -1,3 +1,3 @@
-# Clippy configuration for spec-tui
+# Clippy configuration for speck
 msrv = "1.75"
 cognitive-complexity-threshold = 25

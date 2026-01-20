@@ -3,7 +3,7 @@
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Clear, Paragraph},
+    widgets::{Block, Borders, Clear},
 };
 
 /// Single-line text input widget
@@ -92,7 +92,11 @@ impl Widget for TextInputWidget<'_> {
             x += before_cursor.len() as u16;
 
             // Render cursor
-            let cursor_text = if cursor_char.is_empty() { " " } else { &cursor_char };
+            let cursor_text = if cursor_char.is_empty() {
+                " "
+            } else {
+                &cursor_char
+            };
             buf.set_string(
                 x,
                 inner.y,
@@ -265,7 +269,8 @@ impl Widget for NewSpecDialog<'_> {
         block.render(area, buf);
 
         // Instructions
-        let instructions = "Enter a short name for the new feature (e.g., 'user-auth', 'api-cache'):";
+        let instructions =
+            "Enter a short name for the new feature (e.g., 'user-auth', 'api-cache'):";
         buf.set_string(
             inner.x + 1,
             inner.y + 1,
