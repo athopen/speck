@@ -7,11 +7,11 @@
 //! - ProcessService: Process execution and streaming
 
 mod git;
-mod spec;
 pub mod mcp;
 pub mod process;
+mod spec;
 
 pub use git::GitService;
-pub use spec::SpecService;
 pub use mcp::McpClient;
-pub use process::{ProcessService, ProcessHandle, ProcessOutput, WorkflowRunner};
+pub use process::{ProcessHandle, ProcessOutput, ProcessService, WorkflowRunner};
+pub use spec::SpecService;

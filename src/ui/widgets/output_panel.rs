@@ -106,7 +106,10 @@ impl<'a> OutputPanelWidget<'a> {
                 let prefix = format_timestamp(&line.timestamp);
 
                 Line::from(vec![
-                    Span::styled(format!("[{}] ", prefix), Style::default().fg(Color::DarkGray)),
+                    Span::styled(
+                        format!("[{}] ", prefix),
+                        Style::default().fg(Color::DarkGray),
+                    ),
                     Span::styled(line.content.clone(), style),
                 ])
             })

@@ -1,6 +1,6 @@
 //! Spec list widget for displaying specifications in the overview.
 
-use crate::domain::{Specification, Worktree, WorkflowPhase, WorktreeStatus};
+use crate::domain::{Specification, WorkflowPhase, Worktree, WorktreeStatus};
 use ratatui::{
     prelude::*,
     widgets::{Block, Borders, List, ListItem, ListState},
@@ -62,9 +62,9 @@ impl<'a> SpecListWidget<'a> {
     /// Get worktree status indicator
     fn worktree_status_indicator(&self, worktree: &Worktree) -> &'static str {
         match self.worktree_statuses.get(&worktree.path) {
-            Some(WorktreeStatus::Clean) => "✓",       // Clean
-            Some(WorktreeStatus::Dirty { .. }) => "●", // Has changes
-            Some(WorktreeStatus::Detached) => "!",    // Detached HEAD
+            Some(WorktreeStatus::Clean) => "✓",          // Clean
+            Some(WorktreeStatus::Dirty { .. }) => "●",   // Has changes
+            Some(WorktreeStatus::Detached) => "!",       // Detached HEAD
             Some(WorktreeStatus::Unknown) | None => "?", // Unknown
         }
     }
@@ -149,8 +149,14 @@ mod tests {
 
     #[test]
     fn test_phase_indicators() {
-        assert_eq!(SpecListWidget::phase_indicator(&WorkflowPhase::Specify), "○");
-        assert_eq!(SpecListWidget::phase_indicator(&WorkflowPhase::Implement), "●");
+        assert_eq!(
+            SpecListWidget::phase_indicator(&WorkflowPhase::Specify),
+            "○"
+        );
+        assert_eq!(
+            SpecListWidget::phase_indicator(&WorkflowPhase::Implement),
+            "●"
+        );
     }
 
     #[test]

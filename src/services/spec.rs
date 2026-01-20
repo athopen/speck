@@ -112,7 +112,11 @@ impl SpecService {
             [Add requirements]\n",
             name.replace('-', " "),
             id.as_str(),
-            chrono_lite::Utc::today().to_string().split('T').next().unwrap_or(""),
+            chrono_lite::Utc::today()
+                .to_string()
+                .split('T')
+                .next()
+                .unwrap_or(""),
         );
 
         // For now, just create empty spec.md

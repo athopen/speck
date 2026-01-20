@@ -38,10 +38,13 @@ impl ProjectConfig {
         let mut builder = Config::builder();
 
         // 1. Start with defaults
-        builder = builder.add_source(config::File::from_str(
-            include_str!("../default_config.toml"),
-            config::FileFormat::Toml,
-        ).required(false));
+        builder = builder.add_source(
+            config::File::from_str(
+                include_str!("../default_config.toml"),
+                config::FileFormat::Toml,
+            )
+            .required(false),
+        );
 
         // 2. Project-specific config (.spec-tui.toml in project root)
         if let Some(root) = project_root {
@@ -133,9 +136,7 @@ pub enum McpTransport {
     #[default]
     Stdio,
     /// HTTP transport with SSE for responses
-    Http {
-        endpoint: String,
-    },
+    Http { endpoint: String },
 }
 
 /// UI configuration

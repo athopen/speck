@@ -289,9 +289,9 @@ impl McpClient {
         let msg = serde_json::to_string(request)
             .map_err(|e| McpError::SerializationError(e.to_string()))?;
 
-        writeln!(stdin, "{}", msg)
-            .map_err(|e| McpError::IoError(e.to_string()))?;
-        stdin.flush()
+        writeln!(stdin, "{}", msg).map_err(|e| McpError::IoError(e.to_string()))?;
+        stdin
+            .flush()
             .map_err(|e| McpError::IoError(e.to_string()))?;
 
         // If this is a notification (no id), don't wait for response
@@ -306,7 +306,8 @@ impl McpClient {
 
         // Read response (blocking)
         let mut line = String::new();
-        stdout_reader.read_line(&mut line)
+        stdout_reader
+            .read_line(&mut line)
             .map_err(|e| McpError::IoError(e.to_string()))?;
 
         let response: JsonRpcResponse = serde_json::from_str(&line)
@@ -358,11 +359,7 @@ impl McpClient {
             return Err(McpError::NotInitialized);
         }
 
-        let request = JsonRpcRequest::new(
-            self.next_request_id(),
-            "tools/list",
-            None,
-        );
+        let request = JsonRpcRequest::new(self.next_request_id(), "tools/list", None);
 
         let response = self.send_request(&request)?;
         let result: ToolsListResult = serde_json::from_value(response.into_result()?)
@@ -383,11 +380,7 @@ impl McpClient {
             "arguments": arguments
         });
 
-        let request = JsonRpcRequest::new(
-            self.next_request_id(),
-            "tools/call",
-            Some(params),
-        );
+        let request = JsonRpcRequest::new(self.next_request_id(), "tools/call", Some(params));
 
         let response = self.send_request(&request)?;
         let result: ToolResult = serde_json::from_value(response.into_result()?)
@@ -411,7 +404,8 @@ impl McpClient {
 
         // Merge extra args if provided
         if let Some(extra) = extra_args {
-            if let (Value::Object(ref mut base), Value::Object(extra_obj)) = (&mut arguments, extra) {
+            if let (Value::Object(ref mut base), Value::Object(extra_obj)) = (&mut arguments, extra)
+            {
                 for (k, v) in extra_obj {
                     base.insert(k, v);
                 }
@@ -437,11 +431,7 @@ impl McpClient {
         }
 
         // Send shutdown request
-        let request = JsonRpcRequest::new(
-            self.next_request_id(),
-            "shutdown",
-            None,
-        );
+        let request = JsonRpcRequest::new(self.next_request_id(), "shutdown", None);
 
         let _ = self.send_request(&request);
 
@@ -497,7 +487,8 @@ mod tests {
 
     #[test]
     fn test_json_rpc_request_serialization() {
-        let request = JsonRpcRequest::new(1, "test/method", Some(serde_json::json!({"key": "value"})));
+        let request =
+            JsonRpcRequest::new(1, "test/method", Some(serde_json::json!({"key": "value"})));
         let json = serde_json::to_string(&request).unwrap();
         assert!(json.contains("\"jsonrpc\":\"2.0\""));
         assert!(json.contains("\"id\":1"));

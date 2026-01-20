@@ -10,8 +10,8 @@ use crossterm::{
 };
 use ratatui::prelude::*;
 use std::io;
-use std::path::PathBuf;
 use std::panic;
+use std::path::PathBuf;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use spec_tui::App;

@@ -1,16 +1,19 @@
 //! Application state and main event loop.
 
 use crate::config::ProjectConfig;
-use crate::domain::{ArtifactType, Project, Specification, Worktree, WorkflowCommand, WorkflowCommandType, WorktreeStatus, ExecutionState};
+use crate::domain::{
+    ArtifactType, ExecutionState, Project, Specification, WorkflowCommand, WorkflowCommandType,
+    Worktree, WorktreeStatus,
+};
 use crate::error::{AppError, Result};
-use crate::services::{GitService, SpecService, ProcessHandle, ProcessOutput, WorkflowRunner};
+use crate::services::{GitService, ProcessHandle, ProcessOutput, SpecService, WorkflowRunner};
 use crate::ui::input::{Action, InputHandler, InputMode};
+use crate::ui::widgets::editor::{EditorAction, EditorState};
+use crate::ui::widgets::help::HelpViewState;
 use crate::ui::widgets::output_panel::OutputBuffer;
 use crate::ui::widgets::spec_detail::DocumentViewerState;
-use crate::ui::widgets::editor::{EditorState, EditorAction};
+use crate::ui::widgets::text_input::{TextInputAction, TextInputState};
 use crate::ui::widgets::worktree_list::WorktreeManagementState;
-use crate::ui::widgets::text_input::{TextInputState, TextInputAction};
-use crate::ui::widgets::help::HelpViewState;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
 use ratatui::prelude::*;
 use std::path::PathBuf;
@@ -117,7 +120,8 @@ pub struct App {
     /// State for worktree management view
     pub worktree_management_state: WorktreeManagementState,
     /// Sync status cache for worktrees
-    pub worktree_sync_statuses: std::collections::HashMap<String, crate::domain::WorktreeSyncStatus>,
+    pub worktree_sync_statuses:
+        std::collections::HashMap<String, crate::domain::WorktreeSyncStatus>,
 
     // New spec creation state
     /// Text input state for new spec name
@@ -141,11 +145,8 @@ impl App {
 
         let spec_service = SpecService::new(project.specs_directory.clone());
 
-        let git_service = GitService::new(
-            project_root.clone(),
-            project.worktree_directory.clone(),
-        )
-        .ok();
+        let git_service =
+            GitService::new(project_root.clone(), project.worktree_directory.clone()).ok();
 
         // Create workflow runner with log directory
         let log_dir = project_root.join(".spec-tui").join("logs");
@@ -246,9 +247,11 @@ impl App {
 
     /// Find worktree for a spec (by branch name)
     pub fn find_worktree_for_spec(&self, spec: &Specification) -> Option<&Worktree> {
-        self.worktrees
-            .iter()
-            .find(|w| w.branch == spec.branch || w.branch.contains(&spec.branch) || spec.branch.contains(&w.branch))
+        self.worktrees.iter().find(|w| {
+            w.branch == spec.branch
+                || w.branch.contains(&spec.branch)
+                || spec.branch.contains(&w.branch)
+        })
     }
 
     /// Switch to a spec's worktree, creating it if necessary
@@ -277,7 +280,10 @@ impl App {
             Ok(false) => {
                 // Try to create the branch
                 if let Err(e) = git.create_branch(branch, None) {
-                    return Err(format!("Branch '{}' doesn't exist and couldn't create it: {}", branch, e));
+                    return Err(format!(
+                        "Branch '{}' doesn't exist and couldn't create it: {}",
+                        branch, e
+                    ));
                 }
             }
             Err(e) => return Err(format!("Failed to check branch: {}", e)),
@@ -346,7 +352,11 @@ impl App {
     }
 
     /// Run a workflow command
-    pub fn run_workflow(&mut self, command_type: WorkflowCommandType, spec: &Specification) -> std::result::Result<(), String> {
+    pub fn run_workflow(
+        &mut self,
+        command_type: WorkflowCommandType,
+        spec: &Specification,
+    ) -> std::result::Result<(), String> {
         // Check if a command is already running
         if self.is_command_running() {
             return Err("A command is already running".to_string());
@@ -372,7 +382,9 @@ impl App {
 
     /// Check if a command is currently running
     pub fn is_command_running(&self) -> bool {
-        self.process_handle.as_ref().map_or(false, |h| h.is_running())
+        self.process_handle
+            .as_ref()
+            .map_or(false, |h| h.is_running())
     }
 
     /// Cancel the running command
@@ -385,7 +397,8 @@ impl App {
             cmd.state = ExecutionState::Cancelled;
         }
 
-        self.output_buffer.push_stderr("Command cancelled by user".to_string());
+        self.output_buffer
+            .push_stderr("Command cancelled by user".to_string());
     }
 
     /// Poll process output (call this in the event loop)
@@ -404,7 +417,8 @@ impl App {
                         if let Some(ref mut cmd) = self.active_command {
                             cmd.complete(code);
                         }
-                        self.output_buffer.push_stdout(format!("Process exited with code {}", code));
+                        self.output_buffer
+                            .push_stdout(format!("Process exited with code {}", code));
                     }
                     ProcessOutput::Terminated => {
                         if let Some(ref mut cmd) = self.active_command {
@@ -445,7 +459,11 @@ impl App {
         };
 
         if !has_artifact {
-            return Err(format!("{} not found for {}", artifact_type.filename(), spec.id));
+            return Err(format!(
+                "{} not found for {}",
+                artifact_type.filename(),
+                spec.id
+            ));
         }
 
         // Read the artifact
@@ -453,7 +471,8 @@ impl App {
             Ok(content) => {
                 self.document_content = Some(content.clone());
                 self.document_viewer_state = DocumentViewerState::new();
-                self.document_viewer_state.set_total_lines(content.lines().count());
+                self.document_viewer_state
+                    .set_total_lines(content.lines().count());
                 self.current_doc_type = Some(doc_type);
                 self.view = AppView::DocumentView(doc_type);
                 Ok(())
@@ -516,7 +535,10 @@ impl App {
             DocType::Research => ArtifactType::Research,
         };
 
-        match self.spec_service.write_artifact(&spec.id, artifact_type, &content) {
+        match self
+            .spec_service
+            .write_artifact(&spec.id, artifact_type, &content)
+        {
             Ok(()) => {
                 self.editor_state.mark_saved();
                 self.loading_message = Some("Document saved".to_string());
@@ -556,7 +578,8 @@ impl App {
         if let Some(ref git) = self.git_service {
             for wt in &self.worktrees {
                 if let Ok(sync_status) = git.sync_status(&wt.branch) {
-                    self.worktree_sync_statuses.insert(wt.branch.clone(), sync_status);
+                    self.worktree_sync_statuses
+                        .insert(wt.branch.clone(), sync_status);
                 }
             }
         }
@@ -564,7 +587,8 @@ impl App {
 
     /// Get the selected worktree in management view
     pub fn selected_worktree(&self) -> Option<&Worktree> {
-        self.worktrees.get(self.worktree_management_state.selected_index)
+        self.worktrees
+            .get(self.worktree_management_state.selected_index)
     }
 
     /// Request deletion of the selected worktree
@@ -574,7 +598,8 @@ impl App {
                 self.error_message = Some("Cannot delete the main worktree".to_string());
                 return;
             }
-            self.worktree_management_state.request_delete(wt.path.clone());
+            self.worktree_management_state
+                .request_delete(wt.path.clone());
         }
     }
 
@@ -719,7 +744,11 @@ impl App {
         let _ = self.refresh_specs();
 
         // Find and select the new spec
-        if let Some(idx) = self.specs.iter().position(|s| s.id.as_str() == spec.id.as_str()) {
+        if let Some(idx) = self
+            .specs
+            .iter()
+            .position(|s| s.id.as_str() == spec.id.as_str())
+        {
             self.selected_spec_index = idx;
         }
 
@@ -736,7 +765,8 @@ impl App {
         if self.git_service.is_some() {
             match self.switch_to_spec() {
                 Ok(Some(path)) => {
-                    self.loading_message = Some(format!("Created and switched to: {}", path.display()));
+                    self.loading_message =
+                        Some(format!("Created and switched to: {}", path.display()));
                 }
                 Ok(None) => {}
                 Err(e) => {
@@ -832,18 +862,16 @@ impl App {
                         return true; // Quit
                     }
                 }
-                Action::SwitchWorktree => {
-                    match self.switch_to_spec() {
-                        Ok(Some(path)) => {
-                            self.error_message = None;
-                            self.loading_message = Some(format!("Switched to: {}", path.display()));
-                        }
-                        Ok(None) => {}
-                        Err(e) => {
-                            self.error_message = Some(e);
-                        }
+                Action::SwitchWorktree => match self.switch_to_spec() {
+                    Ok(Some(path)) => {
+                        self.error_message = None;
+                        self.loading_message = Some(format!("Switched to: {}", path.display()));
                     }
-                }
+                    Ok(None) => {}
+                    Err(e) => {
+                        self.error_message = Some(e);
+                    }
+                },
                 Action::ManageWorktrees => {
                     self.open_worktree_management();
                 }
@@ -854,7 +882,8 @@ impl App {
                     // Open document selection or default to spec.md
                     let docs = self.get_available_documents();
                     if docs.is_empty() {
-                        self.error_message = Some("No documents available for this spec".to_string());
+                        self.error_message =
+                            Some("No documents available for this spec".to_string());
                     } else {
                         // Default to first available document
                         if let Err(e) = self.open_document_view(docs[0]) {
@@ -931,7 +960,10 @@ impl App {
             }
             TextInputAction::Changed | TextInputAction::None => {
                 // Clear error on any change
-                if matches!(key.code, KeyCode::Char(_) | KeyCode::Backspace | KeyCode::Delete) {
+                if matches!(
+                    key.code,
+                    KeyCode::Char(_) | KeyCode::Backspace | KeyCode::Delete
+                ) {
                     self.new_spec_error = None;
                 }
             }
@@ -1044,10 +1076,12 @@ impl App {
                 self.close_worktree_management();
             }
             KeyCode::Up | KeyCode::Char('k') => {
-                self.worktree_management_state.select_previous(self.worktrees.len());
+                self.worktree_management_state
+                    .select_previous(self.worktrees.len());
             }
             KeyCode::Down | KeyCode::Char('j') => {
-                self.worktree_management_state.select_next(self.worktrees.len());
+                self.worktree_management_state
+                    .select_next(self.worktrees.len());
             }
             KeyCode::Char('d') | KeyCode::Delete => {
                 self.request_worktree_delete();
@@ -1115,14 +1149,12 @@ impl App {
         // Forward other keys to the editor
         if let Some(ref mut editor) = self.editor_state.editor_mut() {
             match editor.handle_key(key) {
-                EditorAction::Save => {
-                    match self.save_document() {
-                        Ok(()) => {}
-                        Err(e) => {
-                            self.error_message = Some(e);
-                        }
+                EditorAction::Save => match self.save_document() {
+                    Ok(()) => {}
+                    Err(e) => {
+                        self.error_message = Some(e);
                     }
-                }
+                },
                 EditorAction::Quit => {
                     self.close_document_edit();
                 }
@@ -1145,15 +1177,13 @@ impl App {
             KeyCode::Down | KeyCode::Char('j') => {
                 self.select_next_workflow();
             }
-            KeyCode::Enter | KeyCode::Char(' ') => {
-                match self.run_selected_workflow() {
-                    Ok(()) => {}
-                    Err(e) => {
-                        self.error_message = Some(e);
-                        self.view = AppView::Overview;
-                    }
+            KeyCode::Enter | KeyCode::Char(' ') => match self.run_selected_workflow() {
+                Ok(()) => {}
+                Err(e) => {
+                    self.error_message = Some(e);
+                    self.view = AppView::Overview;
                 }
-            }
+            },
             _ => {}
         }
         false

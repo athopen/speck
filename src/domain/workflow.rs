@@ -67,10 +67,7 @@ pub enum ExecutionState {
         pid: Option<u32>,
     },
     /// Command completed successfully
-    Completed {
-        exit_code: i32,
-        duration: Duration,
-    },
+    Completed { exit_code: i32, duration: Duration },
     /// Command was cancelled by user
     Cancelled,
     /// Command failed with error
@@ -237,10 +234,7 @@ mod tests {
 
     #[test]
     fn test_execution_state_transitions() {
-        let mut cmd = WorkflowCommand::new(
-            WorkflowCommandType::Plan,
-            SpecId::new(1, "test"),
-        );
+        let mut cmd = WorkflowCommand::new(WorkflowCommandType::Plan, SpecId::new(1, "test"));
 
         assert!(cmd.state.is_pending());
 
@@ -253,10 +247,7 @@ mod tests {
 
     #[test]
     fn test_output_collection() {
-        let mut cmd = WorkflowCommand::new(
-            WorkflowCommandType::Specify,
-            SpecId::new(1, "test"),
-        );
+        let mut cmd = WorkflowCommand::new(WorkflowCommandType::Specify, SpecId::new(1, "test"));
 
         cmd.add_output("Line 1".to_string(), OutputStream::Stdout);
         cmd.add_output("Line 2".to_string(), OutputStream::Stdout);

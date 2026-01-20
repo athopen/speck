@@ -88,7 +88,10 @@ impl<'a> SpecDetailWidget<'a> {
                     .add_modifier(Modifier::BOLD),
             ));
         }
-        if trimmed.starts_with("#### ") || trimmed.starts_with("##### ") || trimmed.starts_with("###### ") {
+        if trimmed.starts_with("#### ")
+            || trimmed.starts_with("##### ")
+            || trimmed.starts_with("###### ")
+        {
             return Line::from(Span::styled(
                 line.to_string(),
                 Style::default()
@@ -143,7 +146,10 @@ impl<'a> SpecDetailWidget<'a> {
         }
 
         // Checkbox items
-        if trimmed.starts_with("- [ ] ") || trimmed.starts_with("- [x] ") || trimmed.starts_with("- [X] ") {
+        if trimmed.starts_with("- [ ] ")
+            || trimmed.starts_with("- [x] ")
+            || trimmed.starts_with("- [X] ")
+        {
             let indent_spaces = line.len() - trimmed.len();
             let indent = " ".repeat(indent_spaces);
             let checkbox: String = trimmed.chars().take(6).collect();
@@ -164,7 +170,9 @@ impl<'a> SpecDetailWidget<'a> {
         if trimmed.starts_with("> ") {
             return Line::from(Span::styled(
                 line.to_string(),
-                Style::default().fg(Color::DarkGray).add_modifier(Modifier::ITALIC),
+                Style::default()
+                    .fg(Color::DarkGray)
+                    .add_modifier(Modifier::ITALIC),
             ));
         }
 
@@ -277,7 +285,9 @@ impl Widget for SpecDetailWidget<'_> {
 
         // Calculate visible range
         let visible_height = inner.height as usize;
-        let scroll = self.scroll_offset.min(total_lines.saturating_sub(visible_height));
+        let scroll = self
+            .scroll_offset
+            .min(total_lines.saturating_sub(visible_height));
 
         // Create paragraph with scroll
         let visible_lines: Vec<Line> = lines

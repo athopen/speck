@@ -7,50 +7,68 @@ use ratatui::{
 
 /// Help categories
 const HELP_SECTIONS: &[(&str, &[(&str, &str)])] = &[
-    ("Navigation", &[
-        ("↑/k", "Move up"),
-        ("↓/j", "Move down"),
-        ("←/h", "Move left / Previous"),
-        ("→/l", "Move right / Next"),
-        ("g", "Go to top"),
-        ("G", "Go to bottom"),
-        ("PgUp/b", "Page up"),
-        ("PgDn/f", "Page down"),
-    ]),
-    ("Selection & Actions", &[
-        ("Enter/Space", "Select / Confirm"),
-        ("Esc", "Back / Cancel"),
-        ("q", "Quit"),
-    ]),
-    ("Spec Operations", &[
-        ("n", "Create new specification"),
-        ("v", "View document (spec.md)"),
-        ("e", "Edit document"),
-        ("r", "Run workflow command"),
-        ("F5", "Refresh specs & worktrees"),
-    ]),
-    ("Worktree Management", &[
-        ("w", "Switch to spec's worktree"),
-        ("W", "Open worktree manager"),
-        ("d", "Delete worktree (with confirm)"),
-        ("D", "Force delete worktree"),
-    ]),
-    ("Document View", &[
-        ("1", "View spec.md"),
-        ("2", "View plan.md"),
-        ("3", "View tasks.md"),
-        ("4", "View research.md"),
-        ("e", "Switch to edit mode"),
-    ]),
-    ("Document Edit", &[
-        ("Ctrl+S", "Save document"),
-        ("Esc", "Close editor"),
-    ]),
-    ("Command Output", &[
-        ("c", "Cancel running command"),
-        ("↑/↓", "Scroll output"),
-        ("G", "Scroll to bottom"),
-    ]),
+    (
+        "Navigation",
+        &[
+            ("↑/k", "Move up"),
+            ("↓/j", "Move down"),
+            ("←/h", "Move left / Previous"),
+            ("→/l", "Move right / Next"),
+            ("g", "Go to top"),
+            ("G", "Go to bottom"),
+            ("PgUp/b", "Page up"),
+            ("PgDn/f", "Page down"),
+        ],
+    ),
+    (
+        "Selection & Actions",
+        &[
+            ("Enter/Space", "Select / Confirm"),
+            ("Esc", "Back / Cancel"),
+            ("q", "Quit"),
+        ],
+    ),
+    (
+        "Spec Operations",
+        &[
+            ("n", "Create new specification"),
+            ("v", "View document (spec.md)"),
+            ("e", "Edit document"),
+            ("r", "Run workflow command"),
+            ("F5", "Refresh specs & worktrees"),
+        ],
+    ),
+    (
+        "Worktree Management",
+        &[
+            ("w", "Switch to spec's worktree"),
+            ("W", "Open worktree manager"),
+            ("d", "Delete worktree (with confirm)"),
+            ("D", "Force delete worktree"),
+        ],
+    ),
+    (
+        "Document View",
+        &[
+            ("1", "View spec.md"),
+            ("2", "View plan.md"),
+            ("3", "View tasks.md"),
+            ("4", "View research.md"),
+            ("e", "Switch to edit mode"),
+        ],
+    ),
+    (
+        "Document Edit",
+        &[("Ctrl+S", "Save document"), ("Esc", "Close editor")],
+    ),
+    (
+        "Command Output",
+        &[
+            ("c", "Cancel running command"),
+            ("↑/↓", "Scroll output"),
+            ("G", "Scroll to bottom"),
+        ],
+    ),
 ];
 
 /// State for the help view
@@ -116,12 +134,12 @@ impl<'a> HelpWidget<'a> {
         let mut lines = Vec::new();
 
         // Header
-        lines.push(Line::from(vec![
-            Span::styled(
-                "  spec-tui Help  ",
-                Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD),
-            ),
-        ]));
+        lines.push(Line::from(vec![Span::styled(
+            "  spec-tui Help  ",
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )]));
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
             "A TUI for spec-driven development with git worktree management.",
@@ -134,17 +152,16 @@ impl<'a> HelpWidget<'a> {
             // Section header
             lines.push(Line::from(Span::styled(
                 format!("─── {} ───", section_name),
-                Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
             )));
             lines.push(Line::from(""));
 
             // Bindings
             for (key, description) in *bindings {
                 lines.push(Line::from(vec![
-                    Span::styled(
-                        format!("  {:12}", key),
-                        Style::default().fg(Color::Green),
-                    ),
+                    Span::styled(format!("  {:12}", key), Style::default().fg(Color::Green)),
                     Span::raw(*description),
                 ]));
             }
@@ -203,8 +220,8 @@ impl Widget for HelpWidget<'_> {
 
         // Render scrollbar if content exceeds view
         if self.state.total_lines > self.state.visible_height {
-            let mut scrollbar_state = ScrollbarState::new(self.state.total_lines)
-                .position(self.scroll_offset);
+            let mut scrollbar_state =
+                ScrollbarState::new(self.state.total_lines).position(self.scroll_offset);
 
             let scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .begin_symbol(Some("▲"))

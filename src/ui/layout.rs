@@ -1,12 +1,12 @@
 //! Main layout rendering for the TUI.
 
 use crate::app::{App, AppView, DocType};
-use crate::ui::widgets::spec_list::SpecListWidget;
+use crate::ui::widgets::help::HelpWidget;
 use crate::ui::widgets::output_panel::OutputPanelWidget;
 use crate::ui::widgets::spec_detail::SpecDetailWidget;
-use crate::ui::widgets::worktree_list::{WorktreeListWidget, ConfirmDialog};
+use crate::ui::widgets::spec_list::SpecListWidget;
 use crate::ui::widgets::text_input::NewSpecDialog;
-use crate::ui::widgets::help::HelpWidget;
+use crate::ui::widgets::worktree_list::{ConfirmDialog, WorktreeListWidget};
 use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph, Wrap},
@@ -83,16 +83,25 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
 
     // Header
     let header = Paragraph::new("spec-tui - Spec-Driven Development")
-        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+        .style(
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )
         .block(Block::default().borders(Borders::BOTTOM));
     frame.render_widget(header, chunks[0]);
 
     // Main content - spec list
     if app.specs.is_empty() {
-        let empty_msg = Paragraph::new("No specifications found.\n\nPress 'n' to create a new spec.")
-            .style(Style::default().fg(Color::DarkGray))
-            .block(Block::default().borders(Borders::ALL).title("Specifications"))
-            .alignment(Alignment::Center);
+        let empty_msg =
+            Paragraph::new("No specifications found.\n\nPress 'n' to create a new spec.")
+                .style(Style::default().fg(Color::DarkGray))
+                .block(
+                    Block::default()
+                        .borders(Borders::ALL)
+                        .title("Specifications"),
+                )
+                .alignment(Alignment::Center);
         frame.render_widget(empty_msg, chunks[1]);
     } else {
         let spec_list = SpecListWidget::new(
@@ -115,7 +124,11 @@ fn draw_overview(frame: &mut Frame, app: &App, area: Rect) {
 /// Draw spec detail view (placeholder)
 fn draw_spec_detail(frame: &mut Frame, _app: &App, area: Rect, spec_id: &str) {
     let content = Paragraph::new(format!("Spec Detail: {}\n\n(Not yet implemented)", spec_id))
-        .block(Block::default().borders(Borders::ALL).title("Specification Details"));
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Specification Details"),
+        );
     frame.render_widget(content, area);
 }
 
@@ -133,7 +146,11 @@ fn draw_worktree_management(frame: &mut Frame, app: &App, area: Rect) {
 
     // Header
     let header = Paragraph::new("Worktree Management")
-        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+        .style(
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )
         .block(Block::default().borders(Borders::BOTTOM));
     frame.render_widget(header, chunks[0]);
 
@@ -155,7 +172,8 @@ fn draw_worktree_management(frame: &mut Frame, app: &App, area: Rect) {
     }
 
     // Footer with keybindings
-    let footer_text = " j/k: Navigate | Enter: Switch | d: Delete | D: Force Delete | r: Refresh | q: Back ";
+    let footer_text =
+        " j/k: Navigate | Enter: Switch | d: Delete | D: Force Delete | r: Refresh | q: Back ";
     let footer = Paragraph::new(footer_text)
         .style(Style::default().fg(Color::DarkGray))
         .block(Block::default().borders(Borders::TOP));
@@ -166,7 +184,10 @@ fn draw_worktree_management(frame: &mut Frame, app: &App, area: Rect) {
         let popup_area = centered_rect(50, 30, area);
 
         let message = if let Some(ref path) = app.worktree_management_state.pending_delete {
-            format!("Delete worktree at:\n{}\n\nThis cannot be undone!", path.display())
+            format!(
+                "Delete worktree at:\n{}\n\nThis cannot be undone!",
+                path.display()
+            )
         } else {
             "Delete this worktree?".to_string()
         };
@@ -197,7 +218,11 @@ fn draw_document_view(frame: &mut Frame, app: &App, area: Rect, doc_type: &DocTy
     };
 
     let header = Paragraph::new(header_text)
-        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+        .style(
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )
         .block(Block::default().borders(Borders::BOTTOM));
     frame.render_widget(header, chunks[0]);
 
@@ -235,13 +260,21 @@ fn draw_document_edit(frame: &mut Frame, app: &App, area: Rect, doc_type: &DocTy
 
     // Header with spec info
     let header_text = if let Some(spec) = app.selected_spec() {
-        format!("Edit: {} - {}", doc_type_filename(doc_type), spec.id.as_str())
+        format!(
+            "Edit: {} - {}",
+            doc_type_filename(doc_type),
+            spec.id.as_str()
+        )
     } else {
         format!("Edit: {}", doc_type_filename(doc_type))
     };
 
     let header = Paragraph::new(header_text)
-        .style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD))
+        .style(
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD),
+        )
         .block(Block::default().borders(Borders::BOTTOM));
     frame.render_widget(header, chunks[0]);
 
@@ -251,8 +284,18 @@ fn draw_document_edit(frame: &mut Frame, app: &App, area: Rect, doc_type: &DocTy
 
         // Status bar with cursor position and modified indicator
         let (line, col) = editor.cursor_position();
-        let modified = if editor.is_modified() { "[Modified] " } else { "" };
-        let status_text = format!(" {}Line {}, Col {} | {} lines ", modified, line + 1, col + 1, editor.line_count());
+        let modified = if editor.is_modified() {
+            "[Modified] "
+        } else {
+            ""
+        };
+        let status_text = format!(
+            " {}Line {}, Col {} | {} lines ",
+            modified,
+            line + 1,
+            col + 1,
+            editor.line_count()
+        );
 
         let status_style = if editor.is_modified() {
             Style::default().fg(Color::Yellow).bg(Color::DarkGray)
@@ -294,7 +337,9 @@ fn draw_command_output(frame: &mut Frame, app: &App, area: Rect) {
         let state_indicator = match &cmd.state {
             crate::domain::ExecutionState::Pending => "⏳ Pending",
             crate::domain::ExecutionState::Running { .. } => "▶ Running",
-            crate::domain::ExecutionState::Completed { exit_code, .. } if *exit_code == 0 => "✓ Completed",
+            crate::domain::ExecutionState::Completed { exit_code, .. } if *exit_code == 0 => {
+                "✓ Completed"
+            }
             crate::domain::ExecutionState::Completed { .. } => "✗ Completed (error)",
             crate::domain::ExecutionState::Failed { .. } => "✗ Failed",
             crate::domain::ExecutionState::Cancelled => "⊘ Cancelled",
@@ -305,17 +350,19 @@ fn draw_command_output(frame: &mut Frame, app: &App, area: Rect) {
     };
 
     let header = Paragraph::new(header_text)
-        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+        .style(
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )
         .block(Block::default().borders(Borders::BOTTOM));
     frame.render_widget(header, chunks[0]);
 
     // Output panel
-    let output_widget = OutputPanelWidget::new(
-        app.output_buffer.lines(),
-        app.active_command.as_ref(),
-    )
-    .scroll_offset(app.output_buffer.scroll_offset())
-    .auto_scroll(app.output_buffer.is_auto_scroll());
+    let output_widget =
+        OutputPanelWidget::new(app.output_buffer.lines(), app.active_command.as_ref())
+            .scroll_offset(app.output_buffer.scroll_offset())
+            .auto_scroll(app.output_buffer.is_auto_scroll());
     frame.render_widget(output_widget, chunks[1]);
 
     // Footer with keybindings
@@ -402,8 +449,7 @@ fn draw_new_spec(frame: &mut Frame, app: &App, area: Rect) {
     // Draw the dialog popup
     let popup_area = centered_rect(60, 40, area);
 
-    let dialog = NewSpecDialog::new(&app.new_spec_input)
-        .error(app.new_spec_error.as_deref());
+    let dialog = NewSpecDialog::new(&app.new_spec_input).error(app.new_spec_error.as_deref());
     frame.render_widget(dialog, popup_area);
 }
 

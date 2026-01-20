@@ -169,10 +169,16 @@ mod tests {
         let handler = InputHandler::new(true);
 
         let key_j = KeyEvent::new(KeyCode::Char('j'), KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_j, InputMode::Normal), Some(Action::MoveDown));
+        assert_eq!(
+            handler.handle_key(key_j, InputMode::Normal),
+            Some(Action::MoveDown)
+        );
 
         let key_k = KeyEvent::new(KeyCode::Char('k'), KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_k, InputMode::Normal), Some(Action::MoveUp));
+        assert_eq!(
+            handler.handle_key(key_k, InputMode::Normal),
+            Some(Action::MoveUp)
+        );
     }
 
     #[test]
@@ -180,10 +186,16 @@ mod tests {
         let handler = InputHandler::new(false); // vim disabled
 
         let key_up = KeyEvent::new(KeyCode::Up, KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_up, InputMode::Normal), Some(Action::MoveUp));
+        assert_eq!(
+            handler.handle_key(key_up, InputMode::Normal),
+            Some(Action::MoveUp)
+        );
 
         let key_down = KeyEvent::new(KeyCode::Down, KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_down, InputMode::Normal), Some(Action::MoveDown));
+        assert_eq!(
+            handler.handle_key(key_down, InputMode::Normal),
+            Some(Action::MoveDown)
+        );
     }
 
     #[test]
@@ -191,10 +203,16 @@ mod tests {
         let handler = InputHandler::new(true);
 
         let key_w = KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_w, InputMode::Normal), Some(Action::SwitchWorktree));
+        assert_eq!(
+            handler.handle_key(key_w, InputMode::Normal),
+            Some(Action::SwitchWorktree)
+        );
 
         let key_r = KeyEvent::new(KeyCode::Char('r'), KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_r, InputMode::Normal), Some(Action::RunWorkflow));
+        assert_eq!(
+            handler.handle_key(key_r, InputMode::Normal),
+            Some(Action::RunWorkflow)
+        );
     }
 
     #[test]
@@ -202,9 +220,15 @@ mod tests {
         let handler = InputHandler::new(true);
 
         let key_q = KeyEvent::new(KeyCode::Char('q'), KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_q, InputMode::Normal), Some(Action::Quit));
+        assert_eq!(
+            handler.handle_key(key_q, InputMode::Normal),
+            Some(Action::Quit)
+        );
 
         let key_esc = KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE);
-        assert_eq!(handler.handle_key(key_esc, InputMode::Normal), Some(Action::Back));
+        assert_eq!(
+            handler.handle_key(key_esc, InputMode::Normal),
+            Some(Action::Back)
+        );
     }
 }

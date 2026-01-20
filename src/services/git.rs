@@ -266,7 +266,11 @@ impl GitService {
 
         // Check remote branch
         let output = std::process::Command::new("git")
-            .args(["rev-parse", "--verify", &format!("refs/remotes/origin/{}", branch)])
+            .args([
+                "rev-parse",
+                "--verify",
+                &format!("refs/remotes/origin/{}", branch),
+            ])
             .current_dir(&self.repo_path)
             .output()
             .map_err(|e| GitError::Operation(format!("Failed to check remote branch: {}", e)))?;

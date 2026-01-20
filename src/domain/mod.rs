@@ -13,5 +13,7 @@ mod worktree;
 
 pub use project::Project;
 pub use spec::{ArtifactType, SpecArtifacts, SpecId, Specification, WorkflowPhase};
-pub use workflow::{ExecutionState, OutputLine, OutputStream, WorkflowCommand, WorkflowCommandType};
+pub use workflow::{
+    ExecutionState, OutputLine, OutputStream, WorkflowCommand, WorkflowCommandType,
+};
 pub use worktree::{Worktree, WorktreeStatus, WorktreeSyncStatus};

@@ -144,7 +144,8 @@ impl Widget for &EditorWidget<'_> {
 
                 // Highlight cursor position
                 if idx == cursor_line {
-                    let mut spans = vec![Span::styled(line_num, Style::default().fg(Color::DarkGray))];
+                    let mut spans =
+                        vec![Span::styled(line_num, Style::default().fg(Color::DarkGray))];
 
                     if cursor_col < line.len() {
                         let before: String = line.chars().take(cursor_col).collect();
@@ -153,13 +154,20 @@ impl Widget for &EditorWidget<'_> {
 
                         spans.push(Span::styled(before, line_style));
                         spans.push(Span::styled(
-                            if cursor_char.is_empty() { " ".to_string() } else { cursor_char },
+                            if cursor_char.is_empty() {
+                                " ".to_string()
+                            } else {
+                                cursor_char
+                            },
                             Style::default().bg(Color::White).fg(Color::Black),
                         ));
                         spans.push(Span::styled(after, line_style));
                     } else {
                         spans.push(Span::styled(line.to_string(), line_style));
-                        spans.push(Span::styled(" ", Style::default().bg(Color::White).fg(Color::Black)));
+                        spans.push(Span::styled(
+                            " ",
+                            Style::default().bg(Color::White).fg(Color::Black),
+                        ));
                     }
 
                     Line::from(spans)
@@ -213,7 +221,12 @@ fn convert_key_event(key: KeyEvent) -> Input {
         _ => Key::Null,
     };
 
-    Input { key, ctrl, alt, shift }
+    Input {
+        key,
+        ctrl,
+        alt,
+        shift,
+    }
 }
 
 /// Editor state that persists across renders

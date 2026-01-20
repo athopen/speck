@@ -65,13 +65,18 @@ impl ProcessHandle {
     /// Kill the process
     pub fn kill(&mut self) -> Result<()> {
         *self.running.lock().unwrap() = false;
-        self.child.kill().map_err(|e| AppError::Process(e.to_string()))?;
+        self.child
+            .kill()
+            .map_err(|e| AppError::Process(e.to_string()))?;
         Ok(())
     }
 
     /// Wait for the process to complete
     pub fn wait(&mut self) -> Result<i32> {
-        let status = self.child.wait().map_err(|e| AppError::Process(e.to_string()))?;
+        let status = self
+            .child
+            .wait()
+            .map_err(|e| AppError::Process(e.to_string()))?;
         *self.running.lock().unwrap() = false;
         Ok(status.code().unwrap_or(-1))
     }
@@ -92,8 +97,7 @@ impl ProcessService {
     /// Ensure log directory exists
     fn ensure_log_dir(&self) -> Result<()> {
         if !self.log_dir.exists() {
-            fs::create_dir_all(&self.log_dir)
-                .map_err(|e| AppError::io(e.to_string()))?;
+            fs::create_dir_all(&self.log_dir).map_err(|e| AppError::io(e.to_string()))?;
         }
         Ok(())
     }
@@ -127,14 +131,18 @@ impl ProcessService {
             .map_err(|e| AppError::io(e.to_string()))?;
 
         // Write header to log
-        writeln!(log_file, "# Workflow: {} for {}", command_type.tool_name(), spec_id)
-            .map_err(|e| AppError::io(e.to_string()))?;
+        writeln!(
+            log_file,
+            "# Workflow: {} for {}",
+            command_type.tool_name(),
+            spec_id
+        )
+        .map_err(|e| AppError::io(e.to_string()))?;
         writeln!(log_file, "# Started: {}", chrono_lite_timestamp())
             .map_err(|e| AppError::io(e.to_string()))?;
         writeln!(log_file, "# Directory: {}", spec_directory.display())
             .map_err(|e| AppError::io(e.to_string()))?;
-        writeln!(log_file, "---")
-            .map_err(|e| AppError::io(e.to_string()))?;
+        writeln!(log_file, "---").map_err(|e| AppError::io(e.to_string()))?;
 
         // Build command arguments
         let mut args = mcp_args.to_vec();
@@ -328,11 +336,7 @@ impl WorkflowRunner {
 
     /// Create with default settings
     pub fn default_with_log_dir(log_dir: PathBuf) -> Self {
-        Self::new(
-            log_dir,
-            "claude".to_string(),
-            vec!["--mcp".to_string()],
-        )
+        Self::new(log_dir, "claude".to_string(), vec!["--mcp".to_string()])
     }
 
     /// Start a workflow command
@@ -351,8 +355,7 @@ impl WorkflowRunner {
         )?;
 
         // Parse spec_id into SpecId
-        let parsed_spec_id = SpecId::parse(spec_id)
-            .unwrap_or_else(|_| SpecId::new(0, spec_id));
+        let parsed_spec_id = SpecId::parse(spec_id).unwrap_or_else(|_| SpecId::new(0, spec_id));
 
         let mut command = WorkflowCommand::new(command_type, parsed_spec_id);
         command.start();
